@@ -23,6 +23,7 @@ def data():
 #   for gpt4: https://explodingtopics.com/blog/gpt-parameters
     
 
+2
 def plot(data):
     years = []
     parameters = []
@@ -45,9 +46,8 @@ def plot(data):
     
 
     ax2.scatter(years, log_parameters, c='red') #c-d)
-
-    regression_line = [beta * x + alfa for x in years] 
-    ax2.plot(years, regression_line, color='green')
+    
+    ax2.plot(x, float(alfa)*x + float(beta), 'r', label='Fitted line')
     ax2.set_title('logaritm')
     plt.show()
     
@@ -57,13 +57,14 @@ def plot(data):
 #2a 
 #   a = initial, b = growth rate, x year, c deviations.
 #   Morse law - historically nr of transistors per computer chip doubles every two years. (https://ourworldindata.org/moores-law)
-#2b
+    
+#2b&c
 def linearLeastSqueres(x, y):
     x = np.array(x)
     y = np.array(y)
     A = np.vstack([x, np.ones(len(x))]).T
     a, b = np.linalg.lstsq(A, y)[0]
-    return b, a
+
     _ = plt.plot(x, y, 'o', label='Original data', markersize=10)
     _ = plt.plot(x, a*x + b, 'r', label='Fitted line')
     _ = plt.legend()
