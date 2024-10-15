@@ -1,10 +1,10 @@
+
+
 import matplotlib.pyplot as plt
 import math
 import numpy as np
 from scipy.linalg import lstsq
 
-x = [2018, 2019, 2019, 2020, 2020, 2023]
-y = [94_000_000, 1_500_000_000, 8_300_000_000, 17_200_000_000, 175_000_000_000, 1_800_000_000_000]
 #---------------------1 ----------------------------
 def data():
     elmo = [2018, 94_000_000]
@@ -34,23 +34,37 @@ def plot(data):
         log_parameters.append(math.log10(e[1]))
 
     alfa, beta = linearLeastSqueres(years, log_parameters) #excercise 2
+    alfa_nonlog, beta_nonlog = linearLeastSqueres(years, parameters)
+    '''  #ignore
+    for i in range(len(years)): 
+        temp = beta * data[i][0] + alfa
+        log_val = math.log10(data[i][1])
+        diff = (log_val-temp)
+        print(data[i][0], '=', diff, 'expected linearvalue:', temp) #2d)
+    '''
+    years = np.array(years)
+    regression_line = (beta) * years + (alfa)
+    regression_line_nonlog = beta_nonlog * years + alfa_nonlog 
+    #parameters = np.array(parameters)
 
-
+    
     fig, ax1 = plt.subplots()
 
     ax1.scatter(years, parameters, c='blue') #b)
     ax1.set_title('Non-logarithmic')
+    ax1.plot(years, regression_line_nonlog, c='red')
     plt.show(block=False)
 
-    fig2, ax2 = plt.subplots()
-    
 
+    fig2, ax2 = plt.subplots()
     ax2.scatter(years, log_parameters, c='red') #c-d)
-    
-    ax2.plot(x, float(alfa)*x + float(beta), 'r', label='Fitted line')
+    ax2.plot(years, regression_line, 'r', label='Fitted line') #2e)
+
     ax2.set_title('logaritm')
     plt.show()
-    
+
+    #residual line:
+  
 #answers 1e):
 #seems to be growing exponantially, not linearly
 #---------------------2 ----------------------------
@@ -64,11 +78,7 @@ def linearLeastSqueres(x, y):
     y = np.array(y)
     A = np.vstack([x, np.ones(len(x))]).T
     a, b = np.linalg.lstsq(A, y)[0]
-
-    _ = plt.plot(x, y, 'o', label='Original data', markersize=10)
-    _ = plt.plot(x, a*x + b, 'r', label='Fitted line')
-    _ = plt.legend()
-    plt.show()
+    return b, a
 
 #2c
 
@@ -77,4 +87,6 @@ def linearLeastSqueres(x, y):
 def main():
     plot(data())
     #linearLeastSqueres(x, y)
-main()
+
+if __name__ == "__main__":
+    main()
